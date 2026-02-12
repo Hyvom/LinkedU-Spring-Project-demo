@@ -1,4 +1,4 @@
-package com.linkedu.backend.Enteties.enums;
+package com.linkedu.backend.Entities.enums;
 
 public enum ProgressStage {
     ORIENTATION, DOSSIER_PREPARATION, INTERVIEW,

@@ -1,6 +1,6 @@
-package com.linkedu.backend.Enteties;
+package com.linkedu.backend.Entities;
 
-import com.linkedu.backend.Enteties.enums.QuestionType;
+import com.linkedu.backend.Entities.enums.QuestionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
