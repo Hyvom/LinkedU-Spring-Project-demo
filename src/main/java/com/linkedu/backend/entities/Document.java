@@ -26,11 +26,36 @@ public class Document {
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DocumentType documentType;
+
     private String fileName;
     private String filePath;
 
-    @Enumerated(EnumType.STRING)
-    private DocumentType documentType;
+    //Passport
+    private String name;
+    private String lastName;
+    private String issueDate;
+    private String expiryDate;
+    private String issuingCountry;
+
+    //ID Card
+    private String numId;
+    private String birthday;
+
+    //CV
+    private String summary;
+    private String experince;
+    private String projects;
+    private String certeficates;
+    private String email;
+    private String skills;
+    private String softSkills;
+
+    //Cover Letter
+    private String receiver;
+    private String hrName;
 
     @Enumerated(EnumType.STRING)
     private DocumentStatus status = DocumentStatus.PENDING;
@@ -41,3 +66,4 @@ public class Document {
     @JoinColumn(name = "verified_by")
     private User verifiedBy;
 }
+
