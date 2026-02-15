@@ -1,7 +1,7 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
-import com.linkedu.backend.Entities.enums.ProgressStage;
-import com.linkedu.backend.Entities.enums.ProgressStatus;
+import com.linkedu.backend.entities.enums.ProgressStage;
+import com.linkedu.backend.entities.enums.ProgressStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

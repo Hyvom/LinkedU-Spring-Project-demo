@@ -1,7 +1,7 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
-import com.linkedu.backend.Entities.enums.DocumentStatus;
-import com.linkedu.backend.Entities.enums.DocumentType;
+import com.linkedu.backend.entities.enums.DocumentStatus;
+import com.linkedu.backend.entities.enums.DocumentType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

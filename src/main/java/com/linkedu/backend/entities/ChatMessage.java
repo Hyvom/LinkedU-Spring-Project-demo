@@ -1,4 +1,4 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;

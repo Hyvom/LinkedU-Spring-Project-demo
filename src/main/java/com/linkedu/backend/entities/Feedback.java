@@ -1,4 +1,4 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "quiz_attempts")
+@Table(name = "feedback")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuizAttempt {
+public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,10 +22,14 @@ public class QuizAttempt {
     private User student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id", nullable = false)
-    private Quiz quiz;
+    @JoinColumn(name = "agent_id", nullable = false)
+    private User agent;
 
-    private Double score;
+    @Column(nullable = false)
+    private Integer rating; // 1-5
 
-    private LocalDateTime completedAt;
+    @Column(columnDefinition = "TEXT")
+    private String comment;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
