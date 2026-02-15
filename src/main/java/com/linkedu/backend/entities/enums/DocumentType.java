@@ -1,5 +1,9 @@
 package com.linkedu.backend.entities.enums;
 
 public enum DocumentType {
-    PASSPORT, DIPLOMA, TRANSCRIPT, RECOMMENDATION
+    CV,
+    COVER_LETTER,
+    PASSPORT,
+    ID_CARD,
+    DIPLOMA,
 }
