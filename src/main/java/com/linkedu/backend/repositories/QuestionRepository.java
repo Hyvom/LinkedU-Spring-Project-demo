@@ -1,7 +1,7 @@
-package com.linkedu.backend.Repositories;
+package com.linkedu.backend.repositories;
 
-import com.linkedu.backend.Entities.Question;
-import com.linkedu.backend.Entities.Quiz;
+import com.linkedu.backend.entities.Question;
+import com.linkedu.backend.entities.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

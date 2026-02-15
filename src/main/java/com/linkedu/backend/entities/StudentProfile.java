@@ -1,4 +1,4 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

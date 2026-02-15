@@ -1,4 +1,4 @@
-package com.linkedu.backend.Entities.enums;
+package com.linkedu.backend.entities.enums;
 
 public enum QuestionType {
     MCQ, TEXT

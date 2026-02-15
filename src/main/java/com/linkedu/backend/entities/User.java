@@ -1,7 +1,7 @@
-package com.linkedu.backend.Entities;
+package com.linkedu.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.linkedu.backend.Entities.enums.Role;
+import com.linkedu.backend.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
