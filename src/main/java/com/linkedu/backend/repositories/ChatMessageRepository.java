@@ -10,4 +10,5 @@ import java.util.List;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findBySenderAndReceiverOrderByTimestampAsc(User sender, User receiver);
     List<ChatMessage> findByReceiverAndSenderOrderByTimestampAsc(User receiver, User sender);
+    List<ChatMessage> findByReceiverAndSeenFalse(User receiver);
 }
