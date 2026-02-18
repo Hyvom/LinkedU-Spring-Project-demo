@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private final String SECRET = "mySecretKeyForLinkedUAppIsVeryLongAndSecure1234567890";
-    private final long EXPIRATION_TIME = 86400000; // 24 hours
+    private final long EXPIRATION_TIME = 1999999999;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
