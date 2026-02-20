@@ -19,17 +19,25 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ← MAKE NULLABLE - Questions exist independently
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id", nullable = false)
+    @JoinColumn(name = "quiz_id", nullable = true)
     private Quiz quiz;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String questionText;
 
     @Enumerated(EnumType.STRING)
-    private QuestionType questionType;
+    private QuestionType questionType = QuestionType.MCQ;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<Option> options = new ArrayList<>();
+    // MCQ Options
+    private String optionA;
+    private String optionB;
+    private String optionC;
+    private String optionD;
+    private String correctOption;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 }
-

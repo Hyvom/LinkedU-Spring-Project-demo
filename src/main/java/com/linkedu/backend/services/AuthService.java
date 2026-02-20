@@ -41,13 +41,19 @@ public class AuthService {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Email already exists"));
         }
-
+        //Validate role existance
+        Role role;
+        try {
+            role = Role.valueOf(dto.getRole().name());  // Convert String → Enum
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid role: " + dto.getRole()));
+        }
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(dto.getRole());
+        user.setRole(role);
 
         user = userRepository.save(user);
 
