@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "quiz_attempts")
@@ -28,4 +30,14 @@ public class QuizAttempt {
     private Double score;
 
     private LocalDateTime completedAt;
+
+    // ← ADD THESE MISSING FIELDS
+    private Boolean passed;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by")
+    private User reviewedBy;
+
+    @OneToMany(mappedBy = "quizAttempt", cascade = CascadeType.ALL)
+    private List<StudentAnswer> studentAnswers = new ArrayList<>();
 }
