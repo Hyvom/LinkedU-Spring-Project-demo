@@ -1,5 +1,6 @@
-package com.linkedu.backend.entities;
+package com.linkedu.backend.entities.documents;
 
+import com.linkedu.backend.entities.User;
 import com.linkedu.backend.entities.enums.DocumentStatus;
 import com.linkedu.backend.entities.enums.DocumentType;
 import jakarta.persistence.Entity;
@@ -13,11 +14,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "documents")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Document {
+public abstract class Document {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,30 +35,6 @@ public class Document {
 
     private String fileName;
     private String filePath;
-
-    //Passport
-    private String name;
-    private String lastName;
-    private String issueDate;
-    private String expiryDate;
-    private String issuingCountry;
-
-    //ID Card
-    private String numId;
-    private String birthday;
-
-    //CV
-    private String summary;
-    private String experince;
-    private String projects;
-    private String certeficates;
-    private String email;
-    private String skills;
-    private String softSkills;
-
-    //Cover Letter
-    private String receiver;
-    private String hrName;
 
     @Enumerated(EnumType.STRING)
     private DocumentStatus status = DocumentStatus.PENDING;
