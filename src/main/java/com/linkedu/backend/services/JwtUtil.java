@@ -1,5 +1,6 @@
 package com.linkedu.backend.services;
 
+import com.linkedu.backend.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -22,9 +23,11 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, String role) {
+    // ← NEW OVERLOAD: Add userId support
+    public String generateToken(String username, String role, Long userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("userId", userId.toString());  // ← ADD userId
 
         return Jwts.builder()
                 .claims(claims)
@@ -33,6 +36,26 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    // Keep original method unchanged
+    public String generateToken(String username, String role) {
+        return generateToken(username, role, null);  // Use new overload
+    }
+
+    // ← NEW: Extract userId
+    public Long extractUserId(String token) {
+        try {
+            final Claims claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            String userIdStr = claims.get("userId", String.class);
+            return userIdStr != null ? Long.parseLong(userIdStr) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String extractUsername(String token) {
@@ -44,7 +67,6 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-
         final Claims claims = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

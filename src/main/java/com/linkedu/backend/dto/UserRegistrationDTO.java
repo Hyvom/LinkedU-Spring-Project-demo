@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class UserDTO {
+public class UserRegistrationDTO {
     private String username;
     private String firstName;
     private String lastName;

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +23,30 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column (unique = true, nullable =false)
+    private String username;
+
     @Column(nullable = false)
     private String firstName;
 
     @Column(nullable = false)
     private String lastName;
 
+    @Column (name="birthDate")
+    private LocalDate birthDate;
+
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column (nullable = false)
+    private String phoneNumber;
+
+    @Column (nullable = true)
+    private String address;
+
     @Column(nullable = false)
     private String password;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 30, nullable = false)
@@ -63,5 +77,6 @@ public class User {
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<Document> documents = new ArrayList<>();
+
 }
 
