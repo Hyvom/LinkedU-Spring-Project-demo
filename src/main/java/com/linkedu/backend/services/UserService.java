@@ -27,6 +27,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void assignRole(Long userId, Role role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(role);
+        userRepository.save(user);
+    }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }

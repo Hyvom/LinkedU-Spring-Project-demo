@@ -47,6 +47,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_key_id")
+    private ProductKey productKey;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 30, nullable = false)
