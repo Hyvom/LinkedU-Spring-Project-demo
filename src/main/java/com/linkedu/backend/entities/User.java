@@ -58,7 +58,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     // Self-referencing relationships
     @ManyToOne(fetch = FetchType.LAZY)
@@ -80,6 +80,9 @@ public class User {
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<Document> documents = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 
 }
 
