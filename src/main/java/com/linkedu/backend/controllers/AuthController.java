@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-
+    @CrossOrigin(origins = "http://localhost:4200")
     // ← FIXED: Use LoginRequestDTO (identifier + password)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
