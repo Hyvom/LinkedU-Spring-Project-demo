@@ -69,4 +69,8 @@ public class StudentProfileService {
 
         return studentProfileRepository.save(profile);
     }
+
+    public StudentProfile saveProfile(StudentProfile profile) {
+        return studentProfileRepository.save(profile);
+    }
 }

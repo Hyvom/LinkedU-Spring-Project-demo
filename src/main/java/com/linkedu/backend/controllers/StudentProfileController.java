@@ -2,11 +2,13 @@ package com.linkedu.backend.controllers;
 
 import com.linkedu.backend.dto.StudentProfileDTO;
 import com.linkedu.backend.entities.StudentProfile;
+import com.linkedu.backend.services.ImageService;
 import com.linkedu.backend.services.StudentProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import java.util.Map;
 public class StudentProfileController {
 
     private final StudentProfileService studentProfileService;
+    private final ImageService imageService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createProfile(
@@ -82,5 +85,30 @@ public class StudentProfileController {
             return Long.parseLong(principal.split(":")[1]);
         }
         throw new RuntimeException("Invalid authentication principal");
+    }
+
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<?> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            Authentication authentication) {
+        try {
+            Long userId = getUserIdFromAuth(authentication);
+
+            // Save file and get URL
+            String avatarUrl = imageService.saveAvatar(file);
+
+            // Update profile avatar
+            StudentProfile profile = studentProfileService.getProfile(userId);
+            profile.setAvatar(avatarUrl);
+            studentProfileService.saveProfile(profile);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "Avatar uploaded successfully",
+                    "avatarUrl", avatarUrl
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }

@@ -15,6 +15,7 @@ import java.util.UUID;
 public class ImageService {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/uploads/destinations/";
+    private static final String AVATAR_DIR = "src/main/resources/static/uploads/avatars/";
 
     public String saveImage(MultipartFile file) throws IOException {
         // Create directory if not exists
@@ -33,5 +34,22 @@ public class ImageService {
         Files.copy(file.getInputStream(), filePath);
 
         return "/uploads/destinations/" + filename;
+    }
+
+    public String saveAvatar(MultipartFile file) throws IOException {
+        Path uploadPath = Paths.get(AVATAR_DIR);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = originalFilename != null ?
+                originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
+        String filename = UUID.randomUUID() + fileExtension;
+
+        Path filePath = uploadPath.resolve(filename);
+        Files.copy(file.getInputStream(), filePath);
+
+        return "/uploads/avatars/" + filename;
     }
 }
