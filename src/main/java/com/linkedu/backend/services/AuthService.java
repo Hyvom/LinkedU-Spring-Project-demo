@@ -163,7 +163,7 @@ public class AuthService {
         EmailVerificationToken emailToken = new EmailVerificationToken(token, user.getId());
         emailTokenRepository.save(emailToken);
 
-        String verificationUrl = "http://localhost:8080/api/auth/verify?token=" + token;
+        String verificationUrl = "http://localhost:4200/verify?token=" + token;
         emailService.sendVerificationEmail(user.getEmail(), user.getFirstName(), verificationUrl);
     }
 }
