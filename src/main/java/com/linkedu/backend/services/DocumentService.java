@@ -1,5 +1,6 @@
 package com.linkedu.backend.services;
 
+import com.linkedu.backend.dto.documentDTO.DocumentResponseDTO;
 import com.linkedu.backend.entities.User;
 import com.linkedu.backend.entities.documents.*;
 import com.linkedu.backend.entities.enums.DocumentStatus;
@@ -127,12 +128,39 @@ public class DocumentService {
     }
 
     // ================= GET DOCUMENTS =================
-    public List<Document> getStudentDocuments(Long studentId) {
-
+    public List<DocumentResponseDTO> getStudentDocuments(Long studentId) {
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        return documentRepository.findByStudent(student);
+        return documentRepository.findByStudent(student)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private DocumentResponseDTO toDTO(Document doc) {
+        DocumentResponseDTO dto = new DocumentResponseDTO();
+        dto.setId(doc.getId());
+        dto.setDocumentType(doc.getDocumentType());
+        dto.setFileName(doc.getFileName());
+        dto.setFilePath(doc.getFilePath());
+        dto.setStatus(doc.getStatus());
+        dto.setUploadedAt(doc.getUploadedAt());
+
+        if (doc instanceof CvDocument cv) {
+            dto.setSummary(cv.getSummary());
+            dto.setExperience(cv.getExperience());
+            dto.setSkills(cv.getSkills());
+        } else if (doc instanceof PassportDocument p) {
+            dto.setIssueDate(p.getIssueDate());
+            dto.setExpiryDate(p.getExpiryDate());
+            dto.setIssuingCountry(p.getIssuingCountry());
+        } else if (doc instanceof IdCardDocument id) {
+            dto.setNumId(id.getNumId());
+            dto.setBirthday(id.getBirthday());
+        }
+
+        return dto;
     }
 
     //================ VERIFY DOCUMENT ==================

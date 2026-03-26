@@ -1,5 +1,6 @@
 package com.linkedu.backend.controllers;
 
+import com.linkedu.backend.dto.documentDTO.DocumentResponseDTO;
 import com.linkedu.backend.entities.documents.Document;
 import com.linkedu.backend.services.DocumentService;
 import com.linkedu.backend.dto.documentDTO.VerifyDocumentRequestDTO;
@@ -60,7 +61,7 @@ public class DocumentController {
 
     // ================= GET STUDENT DOCUMENTS =================
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<Document>> getStudentDocuments(
+    public ResponseEntity<List<DocumentResponseDTO>> getStudentDocuments(
             @PathVariable Long studentId
     ) {
         return ResponseEntity.ok(
