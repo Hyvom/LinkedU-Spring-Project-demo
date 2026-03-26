@@ -3,6 +3,7 @@ package com.linkedu.backend.services;
 import com.linkedu.backend.entities.StudentProfile;
 import com.linkedu.backend.entities.User;
 import com.linkedu.backend.dto.StudentProfileDTO;
+import com.linkedu.backend.entities.enums.OnlineStatus;
 import com.linkedu.backend.entities.enums.StudyLevel;
 import com.linkedu.backend.entities.enums.CollegeType;
 import com.linkedu.backend.repositories.StudentProfileRepository;
@@ -41,6 +42,11 @@ public class StudentProfileService {
         profile.setLanguages(dto.getLanguages());  // JSON string
         profile.setBudget(dto.getBudget());
         profile.setCollegeType(dto.getCollegeType());
+        if (dto.getOnlineStatus() != null)
+            profile.setOnlineStatus(OnlineStatus.valueOf(dto.getOnlineStatus()));
+        profile.setAvailabilityTime(dto.getAvailabilityTime());
+        profile.setAddress(dto.getAddress());
+        profile.setPhoneNumber(dto.getPhoneNumber());
 
         return studentProfileRepository.save(profile);
     }
@@ -66,6 +72,11 @@ public class StudentProfileService {
         profile.setLanguages(dto.getLanguages());
         profile.setBudget(dto.getBudget());
         profile.setCollegeType(dto.getCollegeType());
+        if (dto.getOnlineStatus() != null)
+            profile.setOnlineStatus(OnlineStatus.valueOf(dto.getOnlineStatus()));
+        profile.setAvailabilityTime(dto.getAvailabilityTime());
+        profile.setAddress(dto.getAddress());
+        profile.setPhoneNumber(dto.getPhoneNumber());
 
         return studentProfileRepository.save(profile);
     }

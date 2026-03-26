@@ -2,6 +2,7 @@ package com.linkedu.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.linkedu.backend.entities.enums.CollegeType;
+import com.linkedu.backend.entities.enums.OnlineStatus;
 import com.linkedu.backend.entities.enums.StudyLevel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,6 +45,15 @@ public class StudentProfile {
 
     @Enumerated(EnumType.STRING)
     private CollegeType collegeType;  // PUBLIC, PRIVATE
+
+    @Enumerated(EnumType.STRING)
+    private OnlineStatus onlineStatus;   // ONLINE / AWAY / OFFLINE
+
+    private String availabilityTime;     // e.g. "9AM-5PM"
+
+    private String address;
+
+    private String phoneNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

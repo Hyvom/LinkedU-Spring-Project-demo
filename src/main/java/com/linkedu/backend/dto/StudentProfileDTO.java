@@ -15,22 +15,18 @@ import lombok.AllArgsConstructor;
 public class StudentProfileDTO {
 
     private LocalDate dateOfBirth;
-
     private String bio;
-
     private String avatar;
-
     private StudyLevel currentStudyLevel;
-
     private StudyLevel wishedStudyLevel;
-
     private String speciality;
-
     private Integer universityYear;
-
     private String languages;  // JSON: '[{"name":"English","level":"C1","rank":1}]'
-
     private Double budget;
-
     private CollegeType collegeType;
+    private String onlineStatus;      // "ONLINE" / "AWAY" / "OFFLINE"
+    private String availabilityTime;
+    private String address;
+    private String phoneNumber;
+
 }
