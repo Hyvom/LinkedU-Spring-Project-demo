@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/api/destinations/**",
                                 "/api/agent-profile/**",
                                 "/api/guest-profile/**",
-                                "/api/agent-profile/**"
+                                "/api/agent-profile/**",
+                                "/api/chat/**"
                         ).permitAll()
                         .requestMatchers("/api/guest-profile/**").authenticated()
                         .requestMatchers("/api/agent-profile/**").authenticated()

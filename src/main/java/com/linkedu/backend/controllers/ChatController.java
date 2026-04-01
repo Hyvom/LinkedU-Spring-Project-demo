@@ -26,8 +26,10 @@ public class ChatController {
             @RequestParam Long receiverId,
             @RequestParam String message) {
 
-        User sender = userRepository.findById(senderId).orElseThrow();
-        User receiver = userRepository.findById(receiverId).orElseThrow();
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender not found: " + senderId));
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new RuntimeException("Receiver not found: " + receiverId));
 
         ChatMessage chat = new ChatMessage();
         chat.setSender(sender);
@@ -41,21 +43,12 @@ public class ChatController {
     @GetMapping("/conversation")
     public ResponseEntity<List<ChatMessage>> getConversation(
             @RequestParam Long user1Id,
-            @RequestParam Long user2Id,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate) {
-            //@Optional @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate) {
-
-        List<ChatMessage> messages = chatMessageRepository.findBySenderAndReceiverOrderByTimestampAsc(
-                userRepository.findById(user1Id).orElseThrow(),
-                userRepository.findById(user2Id).orElseThrow()
-        );
-
-        if (fromDate != null) {
-            messages = messages.stream()
-                    .filter(m -> m.getTimestamp().isAfter(fromDate))
-                    .toList();
-        }
-
+            @RequestParam Long user2Id) {
+        User user1 = userRepository.findById(user1Id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + user1Id));
+        User user2 = userRepository.findById(user2Id)
+                .orElseThrow(() -> new RuntimeException("User not found: " + user2Id));
+        List<ChatMessage> messages = chatMessageRepository.findConversation(user1, user2);
         return ResponseEntity.ok(messages);
     }
 
@@ -70,7 +63,8 @@ public class ChatController {
     // READ - Get unread messages for user
     @GetMapping("/unread/{userId}")
     public ResponseEntity<List<ChatMessage>> getUnreadMessages(@PathVariable Long userId) {
-        User user = userRepository.findById(userId).orElseThrow();
-        return ResponseEntity.ok(chatMessageRepository.findByReceiverAndSeenFalse(user));
+        return userRepository.findById(userId)
+                .map(user -> ResponseEntity.ok(chatMessageRepository.findByReceiverAndSeenFalse(user)))
+                .orElse(ResponseEntity.ok(List.of()));
     }
 }
