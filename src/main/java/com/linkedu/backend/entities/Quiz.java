@@ -1,5 +1,6 @@
 package com.linkedu.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,9 @@ public class Quiz {
 
     private String description;
 
+    @Column
+    private String language;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -31,8 +35,10 @@ public class Quiz {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<QuizAttempt> quizAttempts = new ArrayList<>();
 }

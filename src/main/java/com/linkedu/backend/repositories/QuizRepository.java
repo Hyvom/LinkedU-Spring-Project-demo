@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<Quiz> findByCreatedById(Long createdById);
+    List<Quiz> findByCreatedByIdOrderByCreatedAtDesc(Long createdById);
+    List<Quiz> findByLanguageIgnoreCase(String language);
 }

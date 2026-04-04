@@ -1,6 +1,7 @@
 package com.linkedu.backend.entities;
 
 import com.linkedu.backend.entities.enums.QuestionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Question {
     // ← MAKE NULLABLE - Questions exist independently
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = true)
+    @JsonIgnore
     private Quiz quiz;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -39,5 +41,6 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
+    @JsonIgnore
     private User createdBy;
 }
