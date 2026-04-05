@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/documents/**",
                                 "/api/destinations/**",
+                            "/api/chatbot/**",
                                 "/api/agent-profile/**",
                                 "/api/guest-profile/**",
                                 "/api/agent-profile/**",

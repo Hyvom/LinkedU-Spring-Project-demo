@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Skip filter for public auth endpoints
         String requestPath = request.getServletPath();
-        if (requestPath.startsWith("/api/auth/")) {
+        if (requestPath.startsWith("/api/auth/") || requestPath.startsWith("/api/chatbot/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -40,21 +40,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtUtil.extractUsername(token);
+            try {
+                username = jwtUtil.extractUsername(token);
+            } catch (Exception ex) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtUtil.validateToken(token, username)) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            try {
+                if (jwtUtil.validateToken(token, username)) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // ← FIXED: Use principal as "userId:123" string
-                Long userId = jwtUtil.extractUserId(token);
-                Object principal = userId != null ? "userId:" + userId : username;
+                    // ← FIXED: Use principal as "userId:123" string
+                    Long userId = jwtUtil.extractUserId(token);
+                    Object principal = userId != null ? "userId:" + userId : username;
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(principal, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(principal, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception ex) {
+                SecurityContextHolder.clearContext();
             }
         }
         filterChain.doFilter(request, response);

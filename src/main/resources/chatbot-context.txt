@@ -1,0 +1,61 @@
+LinkedU - Educational Networking Platform
+
+Backend Base URL: http://localhost:8080
+Frontend Base URL: http://localhost:4200
+
+PLATFORM OVERVIEW:
+LinkedU is an educational networking platform connecting students, teachers, agents, and administrators.
+Mission: Democratize access to quality education through direct expert connections.
+
+USER TYPES:
+- Students: Learn from professionals in various fields
+- Language Teachers: Teach English, French, Arabic, Spanish
+- Agents: Recruitment and educational advisors
+- Administrators: Manage platform content and users
+
+MAIN API ENDPOINTS:
+- POST /api/auth/login - User login
+- POST /api/auth/register/guest - Guest registration
+- POST /api/auth/register/contract - Professional registration
+- GET /api/auth/verify - Email verification
+- POST /api/courses - Create new course
+- GET /api/destinations - Get travel/study programs
+- POST /api/tickets - Support tickets
+
+KEY FEATURES:
+- Live Chat with professionals
+- Quizzes and assessments
+- Study destinations (USA, Canada, UK, France)
+- Blog articles on education trends
+- Product marketplace with discount codes
+- Real-time notifications
+- User profiles with credentials verification
+
+COURSE PRICING:
+- Beginner Courses: $15-30 per month
+- Intermediate Courses: $30-50 per month
+- Advanced Programs: $50-100 per month
+- Group Discounts: 15% off for 5+ students
+
+SUPPORT:
+- Email: support@linkedu.com
+- Response Time: 24-48 hours
+- Live Chat: Available 9AM-6PM EST
+- FAQ: https://linkedu.com/help
+
+POPULAR DESTINATIONS:
+- USA: NYU, MIT, Stanford partnerships
+- Canada: University of Toronto, UBC
+- UK: Oxford, Cambridge online programs
+- France: Bachelor programs in English
+
+SYSTEM STATUS:
+- Est. uptime: 99.9%
+- Last maintenance: March 28, 2026
+- Next scheduled: April 15, 2026 (2AM UTC)
+
+CONTACT INFORMATION:
+- Phone: +1-800-LINKEDU (toll-free)
+- Website: https://linkedu.com
+- LinkedIn: @LinkedUEducation
+- Office Location: Montreal, Canada
