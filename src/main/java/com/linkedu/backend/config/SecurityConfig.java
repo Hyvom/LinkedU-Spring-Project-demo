@@ -50,11 +50,20 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/documents/**",
                                 "/api/destinations/**",
-                            "/api/chatbot/**",
                                 "/api/agent-profile/**",
                                 "/api/guest-profile/**",
-                                "/api/agent-profile/**",
-                                "/api/chat/**"
+                                "/api/chat/**",
+                                "/api/student-quiz/**",
+                                "/api/quizzes/**",
+                                "/api/questions/**",
+                                "/api/quiz-assignments/**",
+                                "/api/quiz-attempts/**",
+                                "/api/agent-review/**",
+                                "/api/student/tickets/**",
+                                "/api/agent/tickets/**",
+                                "/api/students/**",
+                                "/api/progress/**",
+                                "/api/student-profile/**"
                         ).permitAll()
                         .requestMatchers("/api/guest-profile/**").authenticated()
                         .requestMatchers("/api/agent-profile/**").authenticated()
