@@ -28,4 +28,23 @@ public class DocumentResponseDTO {
     // ID Card fields
     private String numId;
     private String birthday;
+
+    // ── Diploma fields ──
+    private String degree;
+    private String institution;
+    private String graduationYear;
+    private String fieldOfStudy;
+
+    // ── Transcript fields ──
+    private String academicYear;
+    private String average;
+
+    // ── Cover Letter fields ──
+    private String targetUniversity;
+    private String targetProgram;
+    private String content;
+
+    // ── Other Document fields ──
+    private String documentTitle;
+    private String notes;
 }

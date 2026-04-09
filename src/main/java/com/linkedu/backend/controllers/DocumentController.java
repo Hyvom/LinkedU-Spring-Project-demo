@@ -58,6 +58,61 @@ public class DocumentController {
                 documentService.uploadIdCard(studentId, file, numId, birthday)
         );
     }
+    // ================= DIPLOMA =================
+    @PostMapping(value = "/diploma", consumes = "multipart/form-data")
+    public ResponseEntity<Document> uploadDiploma(
+            @RequestParam Long studentId,
+            @RequestParam MultipartFile file,
+            @RequestParam(required = false) String degree,
+            @RequestParam(required = false) String institution,
+            @RequestParam(required = false) String graduationYear,
+            @RequestParam(required = false) String fieldOfStudy
+    ) {
+        return ResponseEntity.ok(
+                documentService.uploadDiploma(studentId, file, degree, institution, graduationYear, fieldOfStudy)
+        );
+    }
+
+    // ================= TRANSCRIPT =================
+    @PostMapping(value = "/transcript", consumes = "multipart/form-data")
+    public ResponseEntity<Document> uploadTranscript(
+            @RequestParam Long studentId,
+            @RequestParam MultipartFile file,
+            @RequestParam(required = false) String institution,
+            @RequestParam(required = false) String academicYear,
+            @RequestParam(required = false) String average
+    ) {
+        return ResponseEntity.ok(
+                documentService.uploadTranscript(studentId, file, institution, academicYear, average)
+        );
+    }
+
+    // ================= COVER LETTER =================
+    @PostMapping(value = "/cover-letter", consumes = "multipart/form-data")
+    public ResponseEntity<Document> uploadCoverLetter(
+            @RequestParam Long studentId,
+            @RequestParam MultipartFile file,
+            @RequestParam(required = false) String targetUniversity,
+            @RequestParam(required = false) String targetProgram,
+            @RequestParam(required = false) String content
+    ) {
+        return ResponseEntity.ok(
+                documentService.uploadCoverLetter(studentId, file, targetUniversity, targetProgram, content)
+        );
+    }
+
+    // ================= OTHER =================
+    @PostMapping(value = "/other", consumes = "multipart/form-data")
+    public ResponseEntity<Document> uploadOther(
+            @RequestParam Long studentId,
+            @RequestParam MultipartFile file,
+            @RequestParam(required = false) String documentTitle,
+            @RequestParam(required = false) String notes
+    ) {
+        return ResponseEntity.ok(
+                documentService.uploadOther(studentId, file, documentTitle, notes)
+        );
+    }
 
     // ================= GET STUDENT DOCUMENTS =================
     @GetMapping("/student/{studentId}")
