@@ -38,7 +38,8 @@ public class StudentProfile {
     private Integer universityYear;  // 1, 2, 3, 4
 
     // Languages (JSON or separate table - simple JSON for now)
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     private String languages;  // '[{"name":"English","level":"C1","rank":1},...]'
 
     private Double budget;
