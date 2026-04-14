@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class QuizController {
             @RequestParam String title,
             @RequestParam String description,
             @RequestParam String language,
+            @RequestParam(required = false) LocalDateTime startTime,
+            @RequestParam(required = false) LocalDateTime endTime,
             @RequestParam Long createdById) {
         User creator = userRepository.findById(createdById).orElseThrow();
         if (creator.getRole() != Role.LANGUAGE_TEACHER && creator.getRole() != Role.ADMIN) {
@@ -43,6 +46,8 @@ public class QuizController {
         quiz.setTitle(title);
         quiz.setDescription(description);
         quiz.setLanguage(language.trim());
+        quiz.setStartTime(startTime);
+        quiz.setEndTime(endTime);
         quiz.setCreatedBy(creator);
         Quiz savedQuiz = quizRepository.save(quiz);
         autoAssignQuizToMatchingStudents(savedQuiz, creator);
@@ -72,7 +77,9 @@ public class QuizController {
             @RequestParam Long adminId,
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam String language) {
+            @RequestParam String language,
+            @RequestParam(required = false) LocalDateTime startTime,
+            @RequestParam(required = false) LocalDateTime endTime) {
         User admin = userRepository.findById(adminId).orElseThrow();
         if (admin.getRole() != Role.ADMIN) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -83,6 +90,8 @@ public class QuizController {
         quiz.setTitle(title);
         quiz.setDescription(description);
         quiz.setLanguage(language.trim());
+        quiz.setStartTime(startTime);
+        quiz.setEndTime(endTime);
         Quiz savedQuiz = quizRepository.save(quiz);
         autoAssignQuizToMatchingStudents(savedQuiz, admin);
         return ResponseEntity.ok(savedQuiz);

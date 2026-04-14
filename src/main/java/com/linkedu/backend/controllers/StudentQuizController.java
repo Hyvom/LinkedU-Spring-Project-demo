@@ -46,6 +46,12 @@ public class StudentQuizController {
                     .body(Map.of("error", "Quiz is not assigned to this student"));
         }
 
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow();
+        if (!isWithinQuizWindow(quiz)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Quiz is not available at this time"));
+        }
+
         List<QuestionQuizAssignment> assignments = assignmentRepository.findByQuizId(quizId);
         List<Question> questions = assignments.stream()
                 .map(assignment -> assignment.getQuestion())
@@ -83,6 +89,7 @@ public class StudentQuizController {
     public ResponseEntity<?> submitQuiz(
             @RequestParam Long studentId,
             @RequestParam Long quizId,
+            @RequestParam(required = false, defaultValue = "false") boolean auto,
             @RequestBody List<StudentAnswerDTO> answers) {
         if (!canStudentAccessQuiz(studentId, quizId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -91,6 +98,11 @@ public class StudentQuizController {
 
         User student = userRepository.findById(studentId).orElseThrow();
         Quiz quiz = quizRepository.findById(quizId).orElseThrow();
+
+        if (!isWithinQuizWindow(quiz) && !auto) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "Quiz deadline has passed"));
+        }
 
         QuizAttempt attempt = new QuizAttempt();
         attempt.setStudent(student);
@@ -136,6 +148,13 @@ public class StudentQuizController {
                 "passed", attempt.getPassed(),
                 "message", "Quiz submitted and scored"
         ));
+    }
+
+    private boolean isWithinQuizWindow(Quiz quiz) {
+        if (quiz == null) return true;
+        if (quiz.getStartTime() == null || quiz.getEndTime() == null) return true; // no schedule => always available
+        LocalDateTime now = LocalDateTime.now();
+        return !now.isBefore(quiz.getStartTime()) && !now.isAfter(quiz.getEndTime());
     }
 
     private boolean canStudentAccessQuiz(Long studentId, Long quizId) {
