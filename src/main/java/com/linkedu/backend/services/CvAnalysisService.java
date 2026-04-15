@@ -20,11 +20,11 @@ import java.util.Map;
 @Service
 public class CvAnalysisService {
 
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
+    @Value("${groq.api.key}")
+    private String groqApiKey;
 
-    @Value("${gemini.api.url}")
-    private String geminiApiUrl;
+    @Value("${groq.api.url}")
+    private String groqApiUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
@@ -45,7 +45,7 @@ public class CvAnalysisService {
         }
     }
 
-    // ── Analyze CV using Gemini ──
+    // ── Analyze CV using Groq ──
     public CvAnalysisResponseDTO analyzeCv(String cvText) throws IOException {
 
         String prompt = """
@@ -78,28 +78,31 @@ public class CvAnalysisService {
                 %s
                 """.formatted(cvText.length() > 4000 ? cvText.substring(0, 4000) : cvText);
 
-        // Build Gemini request body
-        Map<String, Object> textPart = Map.of("text", prompt);
-        Map<String, Object> parts = Map.of("parts", List.of(textPart));
-        Map<String, Object> body = Map.of("contents", List.of(parts));
+        // Build request body — Groq uses OpenAI-compatible format
+        Map<String, Object> requestBody = Map.of(
+                "model", "llama-3.3-70b-versatile",
+                "messages", List.of(
+                        Map.of("role", "user", "content", prompt)
+                ),
+                "max_tokens", 1024,
+                "temperature", 0.3
+        );
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + groqApiKey);
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        String urlWithKey = geminiApiUrl + "?key=" + geminiApiKey;
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(urlWithKey, request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(groqApiUrl, request, String.class);
 
-        // Parse Gemini response
+        // Parse response — OpenAI format: choices[0].message.content
         JsonNode root = objectMapper.readTree(response.getBody());
         String content = root
-                .path("candidates")
+                .path("choices")
                 .get(0)
+                .path("message")
                 .path("content")
-                .path("parts")
-                .get(0)
-                .path("text")
                 .asText();
 
         // Clean markdown wrappers if present
