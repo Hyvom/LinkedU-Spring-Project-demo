@@ -65,8 +65,6 @@ public class SecurityConfig {
                                 "/api/progress/**",
                                 "/api/student-profile/**"
                         ).permitAll()
-                        .requestMatchers("/api/guest-profile/**").authenticated()
-                        .requestMatchers("/api/agent-profile/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

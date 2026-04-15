@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.linkedu.backend.dto.CvAnalysisResponseDTO;
+import com.linkedu.backend.services.CvAnalysisService;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final CvAnalysisService cvAnalysisService;
 
     // ================= CV =================
     @PostMapping(value = "/cv", consumes = "multipart/form-data")
@@ -139,5 +142,43 @@ public class DocumentController {
                         request.getStatus()
                 )
         );
+    }
+
+    // ================= ANALYZE CV =================
+    @PostMapping(value = "/cv/analyze", consumes = "multipart/form-data")
+    public ResponseEntity<?> analyzeCv(
+            @RequestParam MultipartFile file
+    ) {
+        try {
+            String cvText = cvAnalysisService.extractTextFromPdf(file);
+            if (cvText == null || cvText.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of("error", "Could not extract text from PDF. Make sure it is not a scanned image."));
+            }
+            CvAnalysisResponseDTO analysis = cvAnalysisService.analyzeCv(cvText);
+            return ResponseEntity.ok(analysis);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(java.util.Map.of("error", "CV analysis failed: " + e.getMessage()));
+        }
+    }
+
+    // ================= ANALYZE EXISTING CV =================
+    @GetMapping("/cv/{studentId}/analyze")
+    public ResponseEntity<?> analyzeExistingCv(@PathVariable Long studentId) {
+        try {
+            // Get the student's uploaded CV file path
+            var documents = documentService.getStudentDocuments(studentId);
+            var cvDoc = documents.stream()
+                    .filter(d -> d.getDocumentType().name().equals("CV"))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No CV found for this student"));
+
+            CvAnalysisResponseDTO analysis = cvAnalysisService.analyzeCvFromPath(cvDoc.getFilePath());
+            return ResponseEntity.ok(analysis);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(java.util.Map.of("error", "CV analysis failed: " + e.getMessage()));
+        }
     }
 }
