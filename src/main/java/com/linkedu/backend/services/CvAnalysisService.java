@@ -3,34 +3,35 @@ package com.linkedu.backend.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedu.backend.dto.CvAnalysisResponseDTO;
-import lombok.RequiredArgsConstructor;
-import okhttp3.*;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class CvAnalysisService {
 
-    @Value("${deepseek.api.key}")
-    private String deepseekApiKey;
+    @Value("${gemini.api.key}")
+    private String geminiApiKey;
 
-    @Value("${deepseek.api.url}")
-    private String deepseekApiUrl;
+    @Value("${gemini.api.url}")
+    private String geminiApiUrl;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     // ── Extract text from uploaded PDF ──
     public String extractTextFromPdf(MultipartFile file) throws IOException {
-        try (InputStream inputStream = file.getInputStream();
-             PDDocument document = PDDocument.load(inputStream)) {
+        try (PDDocument document = Loader.loadPDF(file.getBytes())) {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
         }
@@ -38,13 +39,13 @@ public class CvAnalysisService {
 
     // ── Extract text from file path ──
     public String extractTextFromPath(String filePath) throws IOException {
-        try (PDDocument document = PDDocument.load(new java.io.File(filePath))) {
+        try (PDDocument document = Loader.loadPDF(new File(filePath))) {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
         }
     }
 
-    // ── Analyze CV using DeepSeek ──
+    // ── Analyze CV using Gemini ──
     public CvAnalysisResponseDTO analyzeCv(String cvText) throws IOException {
 
         String prompt = """
@@ -77,59 +78,38 @@ public class CvAnalysisService {
                 %s
                 """.formatted(cvText.length() > 4000 ? cvText.substring(0, 4000) : cvText);
 
-        // Build DeepSeek request body (OpenAI-compatible format)
-        String requestBody = objectMapper.writeValueAsString(
-                java.util.Map.of(
-                        "model", "deepseek-chat",
-                        "messages", java.util.List.of(
-                                java.util.Map.of(
-                                        "role", "user",
-                                        "content", prompt
-                                )
-                        ),
-                        "max_tokens", 1024,
-                        "temperature", 0.3
-                )
-        );
+        // Build Gemini request body
+        Map<String, Object> textPart = Map.of("text", prompt);
+        Map<String, Object> parts = Map.of("parts", List.of(textPart));
+        Map<String, Object> body = Map.of("contents", List.of(parts));
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Request request = new Request.Builder()
-                .url(deepseekApiUrl)
-                .post(RequestBody.create(requestBody, MediaType.parse("application/json")))
-                .addHeader("Authorization", "Bearer " + deepseekApiKey)
-                .addHeader("Content-Type", "application/json")
-                .build();
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        String urlWithKey = geminiApiUrl + "?key=" + geminiApiKey;
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                String errorBody = response.body() != null ? response.body().string() : "no body";
-                throw new RuntimeException("DeepSeek API call failed: " + response.code() + " - " + errorBody);
-            }
+        ResponseEntity<String> response = restTemplate.postForEntity(urlWithKey, request, String.class);
 
-            String responseBody = response.body().string();
-            JsonNode root = objectMapper.readTree(responseBody);
+        // Parse Gemini response
+        JsonNode root = objectMapper.readTree(response.getBody());
+        String content = root
+                .path("candidates")
+                .get(0)
+                .path("content")
+                .path("parts")
+                .get(0)
+                .path("text")
+                .asText();
 
-            // DeepSeek response format: choices[0].message.content
-            String content = root
-                    .path("choices")
-                    .get(0)
-                    .path("message")
-                    .path("content")
-                    .asText();
+        // Clean markdown wrappers if present
+        content = content.trim();
+        if (content.startsWith("```json")) content = content.substring(7);
+        if (content.startsWith("```"))     content = content.substring(3);
+        if (content.endsWith("```"))       content = content.substring(0, content.length() - 3);
+        content = content.trim();
 
-            // Clean Markdown wrappers if present
-            content = content.trim();
-            if (content.startsWith("```json")) content = content.substring(7);
-            if (content.startsWith("```"))     content = content.substring(3);
-            if (content.endsWith("```"))       content = content.substring(0, content.length() - 3);
-            content = content.trim();
-
-            return objectMapper.readValue(content, CvAnalysisResponseDTO.class);
-        }
+        return objectMapper.readValue(content, CvAnalysisResponseDTO.class);
     }
 
     // ── Analyze already uploaded CV from file path ──
