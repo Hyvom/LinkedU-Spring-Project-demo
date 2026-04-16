@@ -63,7 +63,8 @@ public class SecurityConfig {
                                 "/api/agent/tickets/**",
                                 "/api/students/**",
                                 "/api/progress/**",
-                                "/api/student-profile/**"
+                                "/api/student-profile/**",
+                                "/api/chatbot/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
